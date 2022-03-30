@@ -18,9 +18,9 @@ public class PlayerInputSO : ScriptableObject
     #endregion
 
     PlayerController _playerController;
+    public PlayerController playerController { get => _playerController; private set => _playerController = value; }
 
     #region REPLAY
-    PlayerControllerReplay _playerControllerReplay;
     List<InputCommand> commandsHistoric;
     Vector3 _initialPosition;
 
@@ -28,23 +28,18 @@ public class PlayerInputSO : ScriptableObject
     ReplayType _replayType;
     #endregion
 
-    private bool isPlayingReplay;
+    private bool isPlayingReplay => _playerController.playerState is PS_Replay;
+    //private bool isPlayingReplay => _playerController.playerState.GetType() == typeof(PS_Replay);
 
     private void OnEnable()
     {
         commandsHistoric = new List<InputCommand>();
-        isPlayingReplay = false;
         _replayType = ReplayType.Position;
     }
 
     public void SetController(PlayerController playerController)
     {
         _playerController = playerController;
-    }
-
-    public void SetControllerReplay(PlayerControllerReplay playerController)
-    {
-        _playerControllerReplay = playerController;
     }
 
     public void SetTimeCounter(TimeCounter timeCounter)
@@ -74,7 +69,7 @@ public class PlayerInputSO : ScriptableObject
 
 
     /// <summary>
-    /// 
+    /// Save historic based on replay type
     /// </summary>
     /// <param name="input">Position or input value</param>
     public void SaveHistoric(Vector2 input)
@@ -92,6 +87,11 @@ public class PlayerInputSO : ScriptableObject
         }
     }
 
+    /// <summary>
+    /// Save historic input
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="timeElapsed"></param>
     public void SaveHistoric(Vector2 input, float timeElapsed)
     {
         commandsHistoric.Add(new InputCommand(input, _timeCounter.timeElapsed));
@@ -99,14 +99,10 @@ public class PlayerInputSO : ScriptableObject
 
     public void StartReplay()
     {
-        isPlayingReplay = true;
-        // playerController = new PlayerController ?
-        _playerControllerReplay.SetCommandHistoric(commandsHistoric, _initialPosition);
-        _playerControllerReplay.Play();
-    }
-
-    public void EndReplay()
-    {
-        isPlayingReplay = false;
+        //_playerControllerReplay.SetCommandHistoric(commandsHistoric, _initialPosition);
+        //_playerControllerReplay.Play();
+        ///((PS_Replay)_playerController.playerState).SetCommandHistoric(commandsHistoric, _initialPosition);
+        _playerController.ChangeState(PlayerStateType.Replay, commandsHistoric,
+            new Vector3Class { value = _initialPosition }, _playerController);
     }
 }

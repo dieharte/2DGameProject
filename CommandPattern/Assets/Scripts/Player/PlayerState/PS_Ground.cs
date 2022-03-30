@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class PS_Ground : PlayerState
 {
-    public PS_Ground(Rigidbody2D rb, PlayerInputSO inputSO) : base(rb, inputSO) { }
+    /// <summary>
+    /// If player is not moving, the first movement have a initial speed movement.
+    /// If player changes the direction of movement, the player will gradually decrease speed (like sonic)
+    /// </summary>
     bool firstFrameMove;
     bool stopMovingInX => Mathf.Abs(_rb.velocity.x) < Mathf.Epsilon;
+
+    public PS_Ground(Rigidbody2D rb, PlayerInputSO inputSO) : base(rb, inputSO) { }
 
     public override void MyLateUpdate()
     {
@@ -42,7 +47,7 @@ public class PS_Ground : PlayerState
         // that i am on ground?
 
         //if (input.y == 1 && onGround)
-        if (input.y == 1 )
+        if (input.y == 1)
         {
             return new Vector2(input.x, 5);
         }

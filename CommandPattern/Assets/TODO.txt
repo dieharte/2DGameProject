@@ -1,3 +1,18 @@
 - Refactor
 - Create a IA
 - Create a level for this IA
+
+
+
+
+
+PlayerState.cs
+// How to handle 'empty' states? It will have?
+// What about transition of states? Can I call it anywhere? Or should be in a 'late frame'?
+
+
+PlayerController.cs
+ChangeIdleState()
+// TODO: Maybe add a Idle State because if the replay ends exactly a in part that is not
+        // a ground, it will be able to move as ground in air.
+

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// How to handle 'empty' states? It will have?
+// What about transition of states? Can I call it anywhere? Or should be in a 'late frame'?
 public class PlayerState
 {
     protected Rigidbody2D _rb;
@@ -13,9 +15,15 @@ public class PlayerState
         _inputSO = inputSO;
     }
 
+
+    public virtual void Prepare(params object[] args) { 
+    
+    }
+
     public virtual void OnEnterState()
     {
-
+        // What about transition of states?
+        // Can I call it anywhere? Or should be in a 'late frame'?
     }
 
     public virtual void OnExitState()
@@ -43,4 +51,17 @@ public class PlayerState
     {
 
     }
+}
+
+public enum PlayerStateType
+{
+    Ground,
+    Replay,
+    Air,
+    // Idle
+}
+
+public class Vector3Class
+{
+    public Vector3 value;
 }

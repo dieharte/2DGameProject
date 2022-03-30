@@ -5,38 +5,33 @@ using UnityEngine;
 // This script will be instantiated in a prefab
 public class PlayerController : MonoBehaviour
 {
+    #region EDITOR VARIABLES
     [SerializeField]
     PlayerInputSO inputSO;
-
     [SerializeField]
     Rigidbody2D rb;
+    #endregion
 
     public Rigidbody2D rigidbody => rb;
-    private bool onGround;
     private PlayerState _playerState;
-    private List<PlayerState> _playerStates;
-
-    /// <summary>
-    /// If player is not moving, the first movement have a initial speed movement.
-    /// If player changes the direction of movement, the player will gradually decrease speed (like sonic)
-    /// </summary>
-    bool firstFrameMove;
-    bool stopMovingInX => Mathf.Abs(rb.velocity.x) < Mathf.Epsilon;
+    public PlayerState playerState;
+    private Dictionary<PlayerStateType, PlayerState> _playerStates;
 
     private void Awake()
     {
         inputSO.SetController(this);
-        firstFrameMove = false;
-
 
         // After all init done: Maybe even a callback
         // set RB for states
-        SetStates();
+        InitStates();
     }
 
-    private void SetStates()
+    private void InitStates()
     {
-        _playerState = new PS_Ground(rb, inputSO);
+        _playerStates = new Dictionary<PlayerStateType, PlayerState>();
+        _playerStates.Add(PlayerStateType.Ground, new PS_Ground(rb, inputSO));
+        _playerStates.Add(PlayerStateType.Replay, new PS_Replay(rb, inputSO));
+        _playerState = _playerStates[PlayerStateType.Ground];
     }
 
     bool update2;
@@ -49,46 +44,56 @@ public class PlayerController : MonoBehaviour
         _playerState.MyUpdate();
     }
 
-    private void LateUpdate()
-    //private void FixedUpdate()
+    private void FixedUpdate()
     {
-        _playerState.MyLateUpdate();
-
-        //if (Mathf.Abs(rb.velocity.x) > inputSO.maxVelX)
-        //    rb.velocity = new Vector2(rb.velocity.x > 0 ? inputSO.maxVelX : -inputSO.maxVelX, rb.velocity.y);
-        //else if (firstFrameMove && rb.velocity != Vector2.zero && Mathf.Abs(rb.velocity.x) < inputSO.minVelX)
-        //{
-        //    firstFrameMove = false;
-        //    rb.velocity = new Vector2(rb.velocity.x > 0 ? inputSO.minVelX : -inputSO.minVelX, rb.velocity.y);
-        //}
-
-        //inputSO.SaveHistoric(transform.position);
+        _playerState.MyFixedUpdate();
     }
 
-
+    private void LateUpdate()
+    {
+        _playerState.MyLateUpdate();
+    }
 
     public void HandleInput(Vector2 input)
     {
         _playerState.HandleInput(input);
-        
-        //input = CalculateJumpForce(input);
-        //rb.AddForce(input, ForceMode2D.Force);
-
-        //if(stopMovingInX)
-        //    firstFrameMove = true;
     }
 
-
-    private Vector2 CalculateJumpForce(Vector2 input)
+    public void ChangeState(PlayerStateType type)
     {
-        if(input.y == 1 && onGround)
+        if (_playerState == _playerStates[type])
         {
-            return new Vector2(input.x, 5);
+            Debug.LogWarning("CHANGING STATE BUT IT THE SAME STATE");
+            return;
         }
-         else
-            return input;
+
+        _playerState.OnExitState();
+        _playerState = _playerStates[type];
+        _playerState.OnEnterState();
     }
 
+    public void ChangeState(PlayerStateType type, params object[] args)
+    {
+        if (_playerState == _playerStates[type])
+        {
+            Debug.LogWarning("CHANGING STATE BUT IT THE SAME STATE");
+            return;
+        }
+
+        _playerState.OnExitState();
+        _playerState = _playerStates[type];
+        _playerState.Prepare(args);
+        _playerState.OnEnterState();
+    }
+
+    // TODO: Maybe add a Idle State because if the replay ends exactly a in part that is not
+    // a ground, it will be able to move as ground in air.
+    public void ChangeIdleState()
+    {
+        _playerState.OnExitState();
+        _playerState = _playerStates[PlayerStateType.Ground];
+        _playerState.OnEnterState();
+    }
 
     /// <summary>
     /// Set Player to idle position when start a replay or new level
