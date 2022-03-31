@@ -9,9 +9,11 @@ public class PS_Ground : PlayerState
     /// If player changes the direction of movement, the player will gradually decrease speed (like sonic)
     /// </summary>
     bool firstFrameMove;
+
+    public PS_Ground(Rigidbody2D rb, PlayerInputSO inputSO, PlayerController controller) : base(rb, inputSO, controller) { }
+
     bool stopMovingInX => Mathf.Abs(_rb.velocity.x) < Mathf.Epsilon;
 
-    public PS_Ground(Rigidbody2D rb, PlayerInputSO inputSO) : base(rb, inputSO) { }
 
     public override void MyLateUpdate()
     {
@@ -47,9 +49,13 @@ public class PS_Ground : PlayerState
         // that i am on ground?
 
         //if (input.y == 1 && onGround)
-        if (input.y == 1)
+        if (input.y > 0)
         {
-            return new Vector2(input.x, 5);
+            _controller.ChangeState(PlayerStateType.Air);
+            // LIMITATION: By Unity Input System, if you just jump, the value in y input could be up to 1,
+            // while if you jump during walking, the value could be up to 0.7
+            return new Vector2(input.x, 30 * input.y);
+            
         }
         else
             return input;

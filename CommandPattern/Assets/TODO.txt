@@ -16,3 +16,18 @@ ChangeIdleState()
 // TODO: Maybe add a Idle State because if the replay ends exactly a in part that is not
         // a ground, it will be able to move as ground in air.
 
+
+
+        =========================================
+        =========================================
+                        Tags:
+        =========================================
+        =========================================
+
+// LIMITATION :
+    Means that a third party package or API have a specific limitation that should be considered
+    during development
+
+// TODO: 
+    Could be a check if this logic make sense with the current system
+    Could just be a TO DO be done later

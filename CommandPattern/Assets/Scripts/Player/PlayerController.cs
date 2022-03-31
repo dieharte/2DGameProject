@@ -6,10 +6,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     #region EDITOR VARIABLES
-    [SerializeField]
-    PlayerInputSO inputSO;
-    [SerializeField]
-    Rigidbody2D rb;
+    [SerializeField] PlayerInputSO inputSO;
+    [SerializeField] Rigidbody2D rb;
+    [SerializeField] GroundCheck groundCheck;
     #endregion
 
     public Rigidbody2D rigidbody => rb;
@@ -29,8 +28,9 @@ public class PlayerController : MonoBehaviour
     private void InitStates()
     {
         _playerStates = new Dictionary<PlayerStateType, PlayerState>();
-        _playerStates.Add(PlayerStateType.Ground, new PS_Ground(rb, inputSO));
-        _playerStates.Add(PlayerStateType.Replay, new PS_Replay(rb, inputSO));
+        _playerStates.Add(PlayerStateType.Ground, new PS_Ground(rb, inputSO, this));
+        _playerStates.Add(PlayerStateType.Replay, new PS_Replay(rb, inputSO, this));
+        _playerStates.Add(PlayerStateType.Air, new PS_Air(rb, inputSO, this, groundCheck));
         _playerState = _playerStates[PlayerStateType.Ground];
     }
 
@@ -56,6 +56,10 @@ public class PlayerController : MonoBehaviour
 
     public void HandleInput(Vector2 input)
     {
+        // TODO: Define about doing a 'deterministic' game.
+        // In this case, I am not sure if this way its deterministic.
+        // Maybe I can store this input to be handle in the next frame. 
+        // But not sure if it will turn on deterministic
         _playerState.HandleInput(input);
     }
 

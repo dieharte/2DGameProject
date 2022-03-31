@@ -8,11 +8,13 @@ public class PlayerState
 {
     protected Rigidbody2D _rb;
     protected PlayerInputSO _inputSO;
+    protected PlayerController _controller;
 
-    public PlayerState(Rigidbody2D rb, PlayerInputSO inputSO)
+    public PlayerState(Rigidbody2D rb, PlayerInputSO inputSO, PlayerController controller)
     {
         _rb = rb;
         _inputSO = inputSO;
+        _controller = controller;
     }
 
 
