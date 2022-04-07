@@ -100,6 +100,6 @@ public class PlayerInputSO : ScriptableObject
     public void StartReplay()
     {
         _playerController.ChangeState(PlayerStateType.Replay, commandsHistoric,
-            new Vector3Class { value = _initialPosition });
+            new Vector3Class(_initialPosition) );
     }
 }

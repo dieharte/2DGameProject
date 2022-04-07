@@ -37,7 +37,7 @@ public class PS_Ground : PlayerState
     {
         // Move
         input = CalculateJumpForce(input);
-        _rb.AddForce(input, ForceMode2D.Force);
+        HandleMovement(input);
 
         if (stopMovingInX)
             firstFrameMove = true;
@@ -51,10 +51,10 @@ public class PS_Ground : PlayerState
         //if (input.y == 1 && onGround)
         if (input.y > 0)
         {
-            _controller.ChangeState(PlayerStateType.Air);
+            _controller.ChangeState(PlayerStateType.Air, new Vector2Class(input) );
             // LIMITATION: By Unity Input System, if you just jump, the value in y input could be up to 1,
             // while if you jump during walking, the value could be up to 0.7
-            return new Vector2(input.x, 30 * input.y);
+            return new Vector2(input.x, 45 * input.y);
             
         }
         else

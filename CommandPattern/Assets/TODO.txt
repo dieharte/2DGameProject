@@ -4,6 +4,12 @@
 
 
 
+Create Attack -> Double pattern?
+Create Double Jump -> add condition to air state?
+Create Levels
+    Like Mario, but need to create a IA that plays automatically
+
+
 
 
 PlayerState.cs
@@ -15,6 +21,7 @@ PlayerController.cs
 ChangeIdleState()
 // TODO: Maybe add a Idle State because if the replay ends exactly a in part that is not
         // a ground, it will be able to move as ground in air.
+
 
 
 

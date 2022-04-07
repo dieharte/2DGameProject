@@ -53,6 +53,15 @@ public class PlayerState
     {
 
     }
+
+    /// <summary>
+    /// Get a calculated "handled input" to move the player.
+    /// </summary>
+    /// <param name="input"></param>
+    protected virtual void HandleMovement(Vector2 input)
+    {
+        _rb.AddForce(input, ForceMode2D.Force);
+    }
 }
 
 public enum PlayerStateType
@@ -66,4 +75,11 @@ public enum PlayerStateType
 public class Vector3Class
 {
     public Vector3 value;
+    public Vector3Class(Vector3 val) => value = val;
+}
+
+public class Vector2Class
+{
+    public Vector2 value;
+    public Vector2Class(Vector2 val) => value = val;
 }
