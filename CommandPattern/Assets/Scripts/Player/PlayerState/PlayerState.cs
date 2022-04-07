@@ -61,6 +61,10 @@ public class PlayerState
     protected virtual void HandleMovement(Vector2 input)
     {
         _rb.AddForce(input, ForceMode2D.Force);
+        if (input.x > 0 && _rb.transform.localScale.x < 0)
+            _rb.transform.localScale = new Vector3 (-_rb.transform.localScale.x, _rb.transform.localScale.y, _rb.transform.localScale.z);
+        else if (input.x < 0 && _rb.transform.localScale.x > 0)
+            _rb.transform.localScale = new Vector3(-_rb.transform.localScale.x, _rb.transform.localScale.y, _rb.transform.localScale.z);
     }
 }
 
